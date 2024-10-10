@@ -144,44 +144,41 @@ const courseInfo = {
 // }
 // }
 // console.log (isNumberNotZero(`cupcake`))
-//----------------------------------------
-
-//If an assignment is not yet due,
-// assignmentGroup.assignments.due_at >=learnerSubmissions.submission. submitted_at
-//Assignments - Declare a Variable
-// assignment (assignmentGroup,learnerSubmissions)
 
 //----------------------------------------------------------------
 
 function assignmentsinfo(assignmentGroup, learnerSubmissions){
-    const results = [];
-    
+  const results = [];  
+    //i am having a hard time defining assignments.id in the function, i can not use assignmentGroup because find is only for arrays
     learnerSubmissions.forEach(submission => {
-        const assignment = assignmentGroup.assignments.find(assignment => assignment.id === submission.assignment_id);
-        if (!assignment)return;
+        const assignment = assignmentGroup.find((assignment) => assignment.id === submission.assignment_id);
+        if (!assignment);
 
-       const dueDate = assignment.due_at;
-       const submittedDate = new (submission.submission.submitted_at);
+       const dueDate = new Date(assignment.due_at);
+       const submittedDate = new Date (submission.submission.submitted_at);
        let score = submission.submission.score;
        let id1 = assignment.id
         //add try catch here 
         if (submittedDate > dueDate){
-          score = (0,score - (assignment.points_possible* 0.10));
+          score = Math.max(0, assignment.points_possible - (score * 0.10));
         }
         else if (submittedDate < dueDate){
-          return;
+          score= null;
         }
-        else if (submittedDate === dueDate){
-          score = assignment.points_possible - score;
-           
-        results.push({
+        else {
+          score = Math.max(0,assignment.points_possible - (assignment.points_possible - score));
+          
+         }   
+       results.push({
             assignment_id: id1,score:score, point_possible:assignment.points_possible
         });
-       
-    }  
-        return results;
-})}
-const datacheck = assignmentsinfo(assignmentGroup.assignments,learnerSubmissions);
+     
+        
+}) 
+return results; 
+}
+
+const datacheck = assignmentsinfo(assignmentGroup,learnerSubmissions);
 console.log(datacheck)
 // /////--------------------------------
 
