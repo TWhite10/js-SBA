@@ -154,48 +154,52 @@ const courseInfo = {
 //----------------------------------------------------------------
 
 function assignmentsinfo(assignmentGroup, learnerSubmissions){
-    const currentDate = new Date();
     const results = [];
     
     learnerSubmissions.forEach(submission => {
-        const assignment = assignments.find(assignment => assignment.id === submission.assignment_id);
+        const assignment = assignmentGroup.assignments.find(assignment => assignment.id === submission.assignment_id);
         if (!assignment)return;
 
-       const dueDate = new Date(assignment.due_at);
-       const SubmittedDate = new Date (submission.submission.submitted_at);
+       const dueDate = assignment.due_at;
+       const submittedDate = new (submission.submission.submitted_at);
        let score = submission.submission.score;
-       let id1 =assignmentGroup.id
+       let id1 = assignment.id
         //add try catch here 
-        if (currentDate >= dueDate){
-            if (SubmittedDate > dueDate){
-                score = Math.max(0,score - (assignment.point_possible* 0.10));
+        if (submittedDate > dueDate){
+          score = (0,score - (assignment.points_possible* 0.10));
         }
+        else if (submittedDate < dueDate){
+          return;
+        }
+        else if (submittedDate === dueDate){
+          score = assignment.points_possible - score;
+           
         results.push({
             assignment_id: id1,score:score, point_possible:assignment.points_possible
         });
        
-    }})  
+    }  
         return results;
-}
+})}
 const datacheck = assignmentsinfo(assignmentGroup.assignments,learnerSubmissions);
 console.log(datacheck)
 // /////--------------------------------
 
-function finalOutput( assignments,learnerSubmissions){
-    const obj1 = {}//for the first object -id:125
-    const obj2 = {}//for the second object - id:132
-    const results = [obj1,obj2 ];
-    learnerSubmissions.forEach(submission => {
-        const assignment = assignments.find(assignment => assignment.id === submission.assignment_id); 
-         if (assignment); {
-    let ratio1 = submission.submission.score /assignment.points_possible;
-    let person1 = assignment.id === submission.assignment_id;
-        if(person1)
-    results.push({
-        id:person1, 1:ratio1
-    });
-}   
-})
-    return results;
-} const datacheck2 = finalOutput(assignmentGroup.assignments,learnerSubmissions) 
-console.log(datacheck2)
+// function finalOutput( assignments,learnerSubmissions){
+//     const obj1 = {}//for the first object -id:125
+//     const obj2 = {}//for the second object - id:132
+//     const results = [obj1,obj2 ];
+//     learnerSubmissions.forEach(submission => {
+//         const assignment = assignments.find(assignment => assignment.id === submission.assignment_id); 
+//          if (assignment); {
+//     let ratio1 = submission.submission.score /assignment.points_possible;
+//     let person1 = assignment.id === submission.assignment_id;
+//         if(person1)
+//     results.push({
+//         id:person1, 1:ratio1
+//     });
+// }   
+// })
+//     return results;
+// } const datacheck2 = finalOutput(assignmentGroup.assignments,learnerSubmissions) 
+// console.log(datacheck2)
